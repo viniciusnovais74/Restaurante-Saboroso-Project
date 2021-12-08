@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html>
+
+<%- include("head")-%>
+
+<body>
+
+  <div class="gtco-loader"></div>
+ 
+  <div id="page">
+      <%- include("header-menu")-%>
+
+<% if(typeof inicio === 'boolean' && inicio){%>
+<%- include("header-index")-%>
+<% }else{%>
+<%-include('header')-%>
+<%}%>
+
+

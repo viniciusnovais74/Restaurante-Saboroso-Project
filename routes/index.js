@@ -1,4 +1,5 @@
 var conn = require('./../inc/db');
+var menus = require('./../inc/menus');
 var express = require('express');
 var router = express.Router();
 
@@ -15,47 +16,53 @@ router.get('/', function (req, res, next) {
     }
     res.render('index', {
       title: 'Restaurante Saboroso!',
-      menus: results
+      menus: results,
+      inicio: true
     });
 
   })
 
 });
 
-router.get('/contacts', function(req,res,next){
+router.get('/contacts', function (req, res, next) {
 
-  res.render('contact',{
-    title:'Contato - Restaurante Saboroso',
+  res.render('contact', {
+    title: 'Contato - Restaurante Saboroso',
     background: 'images/img_bg_3.jpg',
     h1: 'Diga um oi!'
   });
 
 })
-router.get('/menus', function(req,res,next){
+router.get('/menus', function (req, res, next) {
 
-  res.render('menu',{
-    title:'Menus - Restaurante Saboroso',
-    background: 'images/img_bg_1.jpg',
-    h1: 'Saboreie nosso menu!'
-  });
-  
+  menus.getMenus().then(result => {
+    res.render('menu', {
+      title: 'Menus - Restaurante Saboroso',
+      background: 'images/img_bg_1.jpg',
+      h1: 'Saboreie nosso menu!',
+      menus: result
+    });
+  })
+
+
+
 })
-router.get('/reservations', function(req,res,next){
+router.get('/reservations', function (req, res, next) {
 
-  res.render('reservation',{
-    title:'Reservas  - Restaurante Saboroso',
+  res.render('reservation', {
+    title: 'Reservas  - Restaurante Saboroso',
     background: 'images/img_bg_2.jpg',
     h1: 'Reserve uma Mesa!'
   });
-  
-})
-router.get('/services', function(req,res,next){
 
-  res.render('services',{
-    title:'Serviços - Restaurante Saboroso',
+})
+router.get('/services', function (req, res, next) {
+
+  res.render('services', {
+    title: 'Serviços - Restaurante Saboroso',
     background: 'images/img_bg_1.jpg',
     h1: 'É um prazer poder servir!'
   });
-  
+
 })
 module.exports = router;
