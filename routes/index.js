@@ -1,6 +1,7 @@
 var conn = require('./../inc/db');
 var menus = require('./../inc/menus');
 var reserva = require('./../inc/reservation');
+var contato = require('../inc/contacts');
 var express = require('express');
 var router = express.Router();
 
@@ -25,15 +26,6 @@ router.get('/', function (req, res, next) {
 
 });
 
-router.get('/contacts', function (req, res, next) {
-
-  res.render('contact', {
-    title: 'Contato - Restaurante Saboroso',
-    background: 'images/img_bg_3.jpg',
-    h1: 'Diga um oi!'
-  });
-
-})
 
 router.get('/menus', function (req, res, next) {
 
@@ -50,38 +42,34 @@ router.get('/menus', function (req, res, next) {
 
 })
 
-router.get('/reservations', function (req, res, next) {
+router.get('/contacts', function (req, res, next) {
 
-  reserva.render(res, req);
+  contato.render(req, res);
+
 
 })
 
-router.post('/reservations', function (req, res, next) {
+router.post('/contacts', function (req, res, next) {
 
   if (!req.body.name) {
-    reserva.render(res, req, "Digite o nome");
+    contato.render(req, res, "Digite o nome");
   } else if (!req.body.email) {
-    reserva.render(res, req, "Digite o Email");
-  } else if (!req.body.people) {
-    reserva.render(res, req, "Selecione o numero de pessoas");
-  } else if (!req.body.date) {
-    reserva.render(res, req, "Selecione a data");
-  } else if (!req.body.time) {
-    reserva.render(res, req, "Selecione a hora");
+    contato.render(req, res, "Digite o e-mail");
+  } else if (!req.body.message) {
+    contato.render(req, res, "Digite a mensagem");
   } else {
-    reserva.save(req.body).then(results => {
-    
-      reserva.render(req, res, null, "Reserva realizada com sucesso")
-    
+    contato.save(req.body).then(results => {
+      req.body = {};
+      contato.render(req, res, null, "Contato enviado com sucesso!")
+       console.log(req.body);
     }).catch(err => {
-
-      reserva.render(req, res, err);
-    
-    })
-  
+      contato.render(req, res, err.message);
+    });
+   
   }
 
 })
+
 
 router.get('/services', function (req, res, next) {
 
@@ -93,4 +81,48 @@ router.get('/services', function (req, res, next) {
 
 })
 
+router.get('/reservations', function (req, res, next) {
+
+  reserva.render(req, res);
+
+})
+
+router.post('/reservations', function (req, res, next) {
+
+  if (!req.body.name) {
+    reserva.render(req, res, "Digite o nome");
+
+  } else if (!req.body.email) {
+
+    reserva.render(req, res, "Digite o Email");
+
+  } else if (!req.body.people) {
+
+    reserva.render(req, res, "Selecione o numero de pessoas");
+
+  } else if (!req.body.date) {
+
+    reserva.render(req, res, "Selecione a data");
+
+  } else if (!req.body.time) {
+
+    reserva.render(req, res, "Selecione a hora");
+
+  } else {
+
+    reserva.save(req.body).then(results => {
+
+      req.body = {};
+
+      reserva.render(req, res, null, "Reserva realizada com sucesso")
+
+    }).catch(err => {
+
+      reserva.render(req, res, err.message);
+
+    })
+
+  }
+
+})
 module.exports = router;

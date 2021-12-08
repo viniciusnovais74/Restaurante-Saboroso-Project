@@ -19,10 +19,12 @@ module.exports = {
 
             let date = fields.date.split('/');
 
-            date = date[];
+            fields.date = `${date[2]}-${date[1]}-${date[0]}`;
 
             conn.query(`
-        INSERT INTO tb_reservations (name, email, people, date, time) VALUES(?, ?, ?, ?, ?);
+
+        INSERT INTO tb_reservations (name, email, people, date, time) 
+        VALUES(?,?,?,?,?);
         `, [
                 fields.name,
                 fields.email,
@@ -33,6 +35,7 @@ module.exports = {
                 if (err) {
                     reject(err);
                 } else {
+
                     resolve(results);
                 }
             });

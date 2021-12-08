@@ -4,17 +4,7 @@
             <div class="col-md-12">
                 <div class="col-md-6 animate-box">
 
-                    <% if (typeof error ==='string' ){ %>
-                        <div class="alert alert-danger">
-                            <%= error%>
-                        </div>
-                        <%}%>
-                        <% if (typeof success ==='string' ){ %>
-                            <div class="alert alert-success">
-                                <%= success%>
-                            </div>
-                            <%}%>
-                            
+                 <%-include('alerts')-%>
                             <h3>Reserva de mesa</h3>
                             <form action="/reservations" method="post">
                                 <div class="row form-group">
@@ -26,7 +16,7 @@
                                 <div class="row form-group">
                                     <div class="col-md-12">
                                         <label for="inputEmail">E-mail</label>
-                                        <input type="email" id="inputEmail" name="email" class="form-control"value="<%= body.name%>">
+                                        <input type="email" id="inputEmail" name="email" class="form-control"value="<%= body.email%>">
                                     </div>
                                 </div>
                                 <div class="row form-group">
