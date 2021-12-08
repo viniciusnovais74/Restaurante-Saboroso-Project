@@ -1,5 +1,6 @@
 var conn = require('./../inc/db');
 var menus = require('./../inc/menus');
+var reserva = require('./../inc/reservation');
 var express = require('express');
 var router = express.Router();
 
@@ -33,6 +34,7 @@ router.get('/contacts', function (req, res, next) {
   });
 
 })
+
 router.get('/menus', function (req, res, next) {
 
   menus.getMenus().then(result => {
@@ -47,15 +49,40 @@ router.get('/menus', function (req, res, next) {
 
 
 })
+
 router.get('/reservations', function (req, res, next) {
 
-  res.render('reservation', {
-    title: 'Reservas  - Restaurante Saboroso',
-    background: 'images/img_bg_2.jpg',
-    h1: 'Reserve uma Mesa!'
-  });
+  reserva.render(res, req);
 
 })
+
+router.post('/reservations', function (req, res, next) {
+
+  if (!req.body.name) {
+    reserva.render(res, req, "Digite o nome");
+  } else if (!req.body.email) {
+    reserva.render(res, req, "Digite o Email");
+  } else if (!req.body.people) {
+    reserva.render(res, req, "Selecione o numero de pessoas");
+  } else if (!req.body.date) {
+    reserva.render(res, req, "Selecione a data");
+  } else if (!req.body.time) {
+    reserva.render(res, req, "Selecione a hora");
+  } else {
+    reserva.save(req.body).then(results => {
+    
+      reserva.render(req, res, null, "Reserva realizada com sucesso")
+    
+    }).catch(err => {
+
+      reserva.render(req, res, err);
+    
+    })
+  
+  }
+
+})
+
 router.get('/services', function (req, res, next) {
 
   res.render('services', {
@@ -65,4 +92,5 @@ router.get('/services', function (req, res, next) {
   });
 
 })
+
 module.exports = router;
