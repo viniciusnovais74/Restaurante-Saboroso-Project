@@ -1,7 +1,7 @@
 var conn = require('./db');
 module.exports = {
 
-    render(req,res error,success) {
+    render(req, res, error, success) {
 
         res.render('reservation', {
             title: 'Reservas  - Restaurante Saboroso',
@@ -18,8 +18,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
 
             conn.query(`
-        INSERT INTO tb_reservations (name,email,people,date,time)
-        VALUES(?,?,?,?,?)
+        INSERT INTO tb_reservations (name, email, people, date, time) VALUES(?, ?, ?, ?, ?);
         `, [
                 fields.name,
                 fields.email,
@@ -27,9 +26,9 @@ module.exports = {
                 fields.date,
                 fields.time
             ], (err, results) => {
-                if(err){
+                if (err) {
                     reject(err);
-                }else{
+                } else {
                     resolve(results);
                 }
             });
