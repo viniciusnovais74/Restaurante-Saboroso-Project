@@ -17,6 +17,10 @@ module.exports = {
 
         return new Promise((resolve, reject) => {
 
+            let date = fields.date.split('/');
+
+            date = date[];
+
             conn.query(`
         INSERT INTO tb_reservations (name, email, people, date, time) VALUES(?, ?, ?, ?, ?);
         `, [
