@@ -61,11 +61,11 @@ router.post('/contacts', function (req, res, next) {
     contato.save(req.body).then(results => {
       req.body = {};
       contato.render(req, res, null, "Contato enviado com sucesso!")
-       console.log(req.body);
+      console.log(req.body);
     }).catch(err => {
       contato.render(req, res, err.message);
     });
-   
+
   }
 
 })

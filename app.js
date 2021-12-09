@@ -24,7 +24,7 @@ app.use(session({
     host:'localhost',
     port:6379
   }),
-  secret:'p@ssw0rd',
+  secret:'password',
   resave: true,
   saveUninitialized: true
  
