@@ -35,16 +35,18 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1.</td>
+                <% data.forEach(function(row){%>
+                <tr data-row=<%=JSON.stringify()>
+                  <td><%= row.id%></td>
                   <td><img src="dist/img/boxed-bg.jpg" alt="" style="height: 18px;"></td>
-                  <td>Update software</td>
-                  <td>Diuretics paradis num copo é motivis de denguis.</td>
-                  <td>R$1,99</td>
+                  <td><%= row.title%></td>
+                  <td><%= row.description%></td>
+                  <td><%= row.price%></td>
                   <td><button type="button" class="btn btn-xs btn-info btn-update" data-toggle="modal" data-target="#modal-update"><i
                         class="fa fa-pencil"></i> Editar</button>&nbsp;<button type="button" class="btn btn-xs btn-danger btn-delete"><i
                         class="fa fa-trash"></i> Excluir</button></td>
                 </tr>
+                <%});%>
               </tbody>
             </table>
           </div>
@@ -138,3 +140,42 @@
     </div>
 
 <%-include('inc/footer')-%>
+
+<script>
+
+  let formCreate = document.querySelector("#modal-creete form");
+  let formCreateData = new FormData(formCreate);
+
+  formCreate.addEventListener('submit', e => {
+
+    e.preventDefault();
+
+    let formCreateData = new FormData(formCreate);
+
+    fetch('/admin/menus', {
+      method: ' POST',
+      body: formCreateData
+    })
+      .then(response => response.json())
+      .then(json => {
+
+        window.location.reload();
+
+      });
+
+  });
+  [...document.querySelectorAll('.btn-update')].forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.path.find(el => {
+
+          return (el.tagName.toUpperCase() === 'TR');
+        
+        });
+      
+        let data = JSON.parse(tr.dataset.row)
+
+      });
+    
+    });
+
+</script>

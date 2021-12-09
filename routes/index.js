@@ -8,6 +8,7 @@ var router = express.Router();
 /* GET home page. */
 
 
+/* Pagina para Usuarios Comuns*/
 router.get('/', function (req, res, next) {
 
   conn.query(`
@@ -25,7 +26,6 @@ router.get('/', function (req, res, next) {
   })
 
 });
-
 
 router.get('/menus', function (req, res, next) {
 
@@ -69,7 +69,6 @@ router.post('/contacts', function (req, res, next) {
   }
 
 })
-
 
 router.get('/services', function (req, res, next) {
 
@@ -125,4 +124,5 @@ router.post('/reservations', function (req, res, next) {
   }
 
 })
+
 module.exports = router;
