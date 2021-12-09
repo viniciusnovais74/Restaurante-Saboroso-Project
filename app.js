@@ -1,7 +1,12 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+var redis = require('redis');
+var session = require('express-session')
+var RedisStore = require('connect-redis')(session)
+
 var cookieParser = require('cookie-parser');
+var redisClient = redis.createClient();
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
@@ -13,6 +18,18 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(session({
+ 
+  store: new RedisStore({
+    host:'localhost',
+    port:6379
+  }),
+  secret:'p@ssw0rd',
+  resave: true,
+  saveUninitialized: true
+ 
+}));
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -21,6 +38,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
