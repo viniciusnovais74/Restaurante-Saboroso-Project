@@ -9,13 +9,13 @@ const { route } = require(".");
 router.use(function (req, res, next) {
 
     if (['/login'].indexOf(req.url) === -1 && !req.session.user) {
-        
+
         res.redirect("/admin/login");
-    
+
     } else {
-    
+
         next();
-    
+
     }
 
 });
@@ -65,7 +65,6 @@ router.post("/login", function (req, res, next) {
         users.login(req.body.email, req.body.password).then(user => {
 
             req.session.user = user;
-console.log(user);
             res.redirect("/admin");
 
         }).catch(err => {
@@ -93,15 +92,29 @@ router.get('/emails', function (req, res, next) {
 
     });
 });
+
 //Menus page
 router.get('/menus', function (req, res, next) {
 
     menus.getMenus().then(data => {
+
         res.render("admin/menus", admin.getParams(req, { data }));
-    })
+
+    });
+
 });
 router.post('/menus', function (req, res, next) {
-    res.send(req.fields);
+
+    menus.save(req.fields, req.files).then(results => {
+
+        res.send(results);
+
+    }).catch(err => {
+
+        res.send(err);
+    
+    });
+
 });
 
 //Reservation page
