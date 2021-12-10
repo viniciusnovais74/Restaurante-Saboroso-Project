@@ -9,9 +9,13 @@ const { route } = require(".");
 router.use(function (req, res, next) {
 
     if (['/login'].indexOf(req.url) === -1 && !req.session.user) {
+        
         res.redirect("/admin/login");
+    
     } else {
+    
         next();
+    
     }
 
 });
@@ -34,10 +38,8 @@ router.get("/logout", function (req, res, next) {
 //Home page
 router.get('/', function (req, res, next) {
 
-    res.render("admin/index", {
-        menus: req.menus,
-        user: req.session.user
-    });
+    res.render("admin/index", admin.getParams(req));
+
 });
 
 //Login page
@@ -62,9 +64,8 @@ router.post("/login", function (req, res, next) {
 
         users.login(req.body.email, req.body.password).then(user => {
 
-
             req.session.user = user;
-
+console.log(user);
             res.redirect("/admin");
 
         }).catch(err => {
@@ -80,18 +81,18 @@ router.post("/login", function (req, res, next) {
 //Contacts page
 router.get('/contacts', function (req, res, next) {
 
-    res.render("admin/contacts", {
-
-    });
+    res.render("admin/contacts", admin.getParams(req));
 });
 
 //Email page
 router.get('/emails', function (req, res, next) {
 
-    res.render("admin/emails", admin.getParams(req));
+    res.render("admin/emails", {
+        menus: req.menus,
+        user: req.session.user
 
+    });
 });
-
 //Menus page
 router.get('/menus', function (req, res, next) {
 
@@ -106,7 +107,9 @@ router.post('/menus', function (req, res, next) {
 //Reservation page
 router.get('/reservations', function (req, res, next) {
 
-    res.render("admin/reservations", admin.getParams(req, { date: {} }));
+    res.render("admin/reservations", admin.getParams(req, {
+        date: {}
+    }))
 
 });
 
@@ -114,7 +117,6 @@ router.get('/reservations', function (req, res, next) {
 router.get('/users', function (req, res, next) {
 
     res.render("admin/users", admin.getParams(req));
-
 });
 
 module.exports = router;

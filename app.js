@@ -1,31 +1,26 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var redis = require('redis');
-var session = require('express-session')
-var RedisStore = require('connect-redis')(session)
-var formidable = require('formidable')
-
 var cookieParser = require('cookie-parser');
-var redisClient = redis.createClient();
 var logger = require('morgan');
+
+
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+var redis = require("redis");
+var formidable = require('formidable')
 
 var indexRouter = require('./routes/index');
 var adminRouter = require('./routes/admin');
 
 var app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-app.use(function (req, res, next) {
+/**app.use(function (req, res, next) {
   if (req.method === 'POST') {
-    var orm = formidable.IncomingForm({
+    var form = new formidable.IncomingForm({
       uploadDir: path.join(__dirname, "/public/images"),
       keepExtensions: true
     });
-    orm.parse(req, function (err, fields, files) {
+    form.parse(req, function (err, fields, files) {
       req.fields = fields;
       req.files = files;
       next();
@@ -34,18 +29,27 @@ app.use(function (req, res, next) {
     next()
   }
 });
+*/
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
+
+
+//Solução do LOOP INFINITO LOGIN
+//Solução para o Erro de looping ao logar
+
+ 
 app.use(session({
-
   store: new RedisStore({
-    host: 'localhost',
+    host:'localhost',
     port: 6379
   }),
   secret: 'password',
-  resave: true,
+  resave: false,
   saveUninitialized: true
-
 }));
+
 
 app.use(logger('dev'));
 app.use(express.json());
