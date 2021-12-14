@@ -198,7 +198,7 @@
 
       btn.addEventListener('click', e => {
 
-        let tr = e.path.find(el => {
+        let tr = e.composedPath().find(el => {
 
           return (el.tagName.toUpperCase() === 'TR');
 
@@ -226,7 +226,7 @@
 
           btn.addEventListener('click', e => {
 
-            let tr = e.path.find(el => {
+            let tr = e.composedPath.find(el => {
 
               return (el.tagName.toUpperCase() === 'TR');
 
