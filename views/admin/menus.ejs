@@ -36,7 +36,7 @@
             </thead>
             <tbody>
               <% data.forEach(function(row){%>
-                <tr data-row=<%=JSON.stringify()%>>
+                <tr data-row='<%=JSON.stringify(row)%>'>
                   <td>
                     <%= row.id%>
                   </td>
@@ -151,112 +151,33 @@
   <%-include('inc/footer')-%>
     <script src="/js/hcode-filereader.js"></script>
     <script src="/js/hcode-formsave.js"></script>
+    <script src="/js/hcode-grid.js"></script>
 
-    <script>
+<script>
+new HcodeFileReader("#modal-create [type=file]", "#modal-create-img");
+new HcodeFileReader("#modal-update [type=file]", "#modal-create-img");
 
-      new HcodeFileReader("#modal-create [type=file]", "#modal-create-img");
-      new HcodeFileReader("#modal-update [type=file]", "#modal-create-img");
+new HcodeGrid({
+  deleteUrl: '/admin/menus/${data.id}',
+  deleteMsg: 'Deseja realmente excluir o menu ${data.title}?',
+  onUpdateLoad: (form, name, data) => {
 
-      let formCreate = document.querySelector("#modal-create form");
+    let input = form.querySelector(`[name=${name}]`);
 
-      formCreate.save().then(json => {
+    switch (name) {
 
-          location.reload();
+      case 'photo':
+        form.querySelector("img").src = '/' + data[name];
+        break;
+      default:
+        if (input) input.value = data[name];
+        break;
+    }
 
-      });
+  }
 
-      let formUpdate = document.querySelector("#modal-update form");
+});
 
-      formUpdate.save().then(json => {
+ 
 
-          location.reload();
-
-      });
-
-      formCreate.addEventListener('submit', e => {
-
-          e.preventDefault();
-
-          let formCreateData = new FormData(formCreate);
-
-          fetch('/admin/menus', {
-            method: 'POST',
-            body: formCreateData
-          })
-            .then(response => response.json())
-            .then(json => {
-
-              console.log(json);
-
-              window.location.reload();
-
-            });
-
-      });
-
-  [...document.querySelectorAll('.btn-delete')].forEach(btn => {
-
-      btn.addEventListener('click', e => {
-
-        let tr = e.composedPath().find(el => {
-
-          return (el.tagName.toUpperCase() === 'TR');
-
-        });
-
-        let data = JSON.parse(tr.dataset.row);
-
-        if (confirm(`Deseja realmente excluir o ${data.title} do menu?`)) {
-          fetch(`/admin/menus/${data.id}`, {
-            method: 'DELETE'
-          })
-            .then(response => response.json())
-            .then(json => {
-              console.log(json);
-            })
-        }
-
-        console.log(data.id);
-
-      });
-
-    });
-
-    [...document.querySelectorAll('.btn-update')].forEach(btn => {
-
-          btn.addEventListener('click', e => {
-
-            let tr = e.composedPath.find(el => {
-
-              return (el.tagName.toUpperCase() === 'TR');
-
-            });
-
-            let data = JSON.parse(tr.dataset.row);
-
-            for (let name in data) {
-
-              switch (name) {
-
-                case 'photo':
-                  formUpdate.querySelector("img").src = data[name];
-                  break;
-
-                default:
-
-                  let input = formUpdate.querySelector(`[name=${name}]`);
-
-                  if (input) input.value = data[name];
-
-                  break;
-              }
-
-            }
-
-            $('#modal-update').modal('show')
-
-          });
-
-      });
-
-    </script>
+</script>

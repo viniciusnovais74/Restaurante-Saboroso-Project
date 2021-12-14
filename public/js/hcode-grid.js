@@ -1,3 +1,4 @@
+
 class HcodeGrid {
 
 
@@ -93,6 +94,7 @@ class HcodeGrid {
 
         return JSON.parse(tr.dataset.row);
 
+        
     }
 
     init() {
@@ -107,22 +109,11 @@ class HcodeGrid {
 
                 for (let name in data) {
 
-                    let input = this.formUpdate.querySelector(`[name=${name}]`);
-
-                    switch (name) {
-
-                        case 'date':
-                            if (input) input.value = moment(data[name]).format('YYYY-MM-DD');
-
-                            break
-                        default:
-                            if (input) input.value = data[name];
-                            break;
-                    }
+                    this.config.onUpdateLoad(this.formUpdate, name, data)
 
                 }
 
-                this.fireEvent('afterUpdateClick', [e]);
+ //
 
             });
 

@@ -8,7 +8,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
 
             conn.query(`
-                SELECT * FROM tb_menus ORDER BY title
+                SELECT * FROM tb_menus ORDER BY id DESC
             `, (err, result) => {
 
                 if (err) {
@@ -47,12 +47,14 @@ module.exports = {
 
             if (parseInt(fields.id) > 0) {
 
+                params.push(fields.id);
+
                 query = `
                     UPDATE tb_menus
                     SET title = ?,
                         description = ?,
-                        price = ?,
-                        ${queryPhoto},
+                        price = ?
+                        ${queryPhoto}
                     WHERE id = ?
                 `;
 
