@@ -1,8 +1,7 @@
-HTMLFormElement.prototype.save = function () {
+HTMLFormElement.prototype.save = function (config) {
 
     let form = this;
 
-    return new Promise((s, r) => {
         form.addEventListener('submit', e => {
 
             e.preventDefault();
@@ -18,16 +17,24 @@ HTMLFormElement.prototype.save = function () {
                 .then(response => response.json())
                 .then(json => {
 
-                    s(json);
-                
+                    if (json.error) {
+
+                        if (typeof config.failure === 'function') config.failure(json.error);
+
+
+                    } else {
+
+                        if (typeof config.success === 'function') config.success(json);
+
+                    }
                 }).catch(err => {
-                
-                    r(err);
-                
+
+                    if (typeof config.failure === 'function') config.failure(json.error);
+
                 });
 
-        });
+        })
 
-    });
+    }
 
-}
+

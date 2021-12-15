@@ -182,7 +182,7 @@ router.get('/users', function (req, res, next) {
     users.getUsers().then(data => {
 
         res.render("admin/users", admin.getParams(req, {
-data
+            data
         }));
 
     });
@@ -207,6 +207,21 @@ router.post('/users', function (req, res, next) {
 router.delete('/users/:id', function (req, res, next) {
 
     users.delete(req.params.id).then(results => {
+
+        res.send(results);
+
+    }).catch(err => {
+
+        res.send({
+            error: err});
+
+    });
+
+});
+
+router.post("/users/password-change", function (req, res, next) {
+
+    users.changePassword(req).then(results => {
 
         res.send(results);
 

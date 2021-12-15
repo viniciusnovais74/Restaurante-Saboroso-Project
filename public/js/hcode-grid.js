@@ -23,7 +23,7 @@ class HcodeGrid {
             },
             afterFormUpdate: (e) => {
 
-                window.location.reload()
+                //   window.location.reload()
 
             },
             afterFormCreateError: e => {
@@ -39,17 +39,19 @@ class HcodeGrid {
 
             formCreate: '#modal-create form',
             formUpdate: '#modal-update form',
-            btnUpdate: '.btn-update',
-            btnDelete: '.btn-delete',
+            btnUpdate: 'btn-update',
+            btnDelete: 'btn-delete',
             onUpdateLoad: (form, name, data) => {
 
                 let input = form.querySelector('[name=' + name + ']');
 
-                if(input)input.value = data[name];
+                if (input) input.value = data[name];
 
             }
 
         }, configs);
+
+        this.rows = [...document.querySelectorAll('table tbody tr')]
 
         this.initForms();
         this.init();
@@ -61,7 +63,16 @@ class HcodeGrid {
 
         this.formCreate = document.querySelector(this.config.formCreate);
 
-        this.formCreate.save().then(json => {
+        this.formCreate.save({
+
+            success: () => {
+                this.fireEvent('afterFormCreate');
+            },
+            failure: () => {
+                this.fireEvent('afterFormCreateError');
+            }
+
+        }).then(json => {
 
             this.fireEvent('afterFormCreate');
 
@@ -73,14 +84,16 @@ class HcodeGrid {
 
         this.formUpdate = document.querySelector(this.config.formUpdate);
 
-        this.formUpdate.save().then(json => {
-
-            this.fireEvent('afterFormUpdate');
-
-        }).catch(err => {
-
-            this.fireEvent('afterFormUpdateError');
-
+        this.formUpdate.save({
+        
+            success: () => {
+                this.fireEvent('afterFormUpdate');
+            },
+        
+            failure: () => {
+                this.fireEvent('afterFormUpdateError');
+            }
+        
         });
 
     }
@@ -104,47 +117,67 @@ class HcodeGrid {
 
     }
 
+    btnUpdateClick(e) {
+
+        this.fireEvent('beforeUpdateClick', [e]);
+
+        let data = this.getTrData(e);
+
+        for (let name in data) {
+
+            this.config.onUpdateLoad(this.formUpdate, name, data)
+
+        }
+
+        this.fireEvent('afterUpdateClick', [e]);
+
+    }
+
+    btnDeleteClick(e) {
+
+        this.fireEvent('beforeDeleteClick');
+
+        let data = this.getTrData(e);
+
+        if (confirm(eval('`' + this.config.deleteMsg + '`'))) {
+
+            fetch(eval('`' + this.config.deleteUrl + '`'), {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(json => {
+
+                    this.fireEvent('afterDeleteClick');
+
+                });
+
+        }
+
+    }
+
     init() {
 
-        [...document.querySelectorAll(this.config.btnUpdate)].forEach(btn => {
+        this.rows.forEach(row => {
 
-            btn.addEventListener('click', e => {
+            [...row.querySelectorAll('.btn')].forEach(btn => {
 
-                this.fireEvent('beforeUpdateClick', [e]);
+                btn.addEventListener('click', e => {
 
-                let data = this.getTrData(e);
+                    if (e.target.classList.contains(this.config.btnUpdate)) {
 
-                for (let name in data) {
+                        this.btnUpdateClick(e);
 
-                    this.config.onUpdateLoad(this.formUpdate, name, data)
+                    } else if (e.target.classList.contains(this.config.btnDelete)) {
 
-                }
+                        this.btnDeleteClick(e);
 
-                //
+                    } else {
 
-            });
+                        this.fireEvent('buttonClick', [e.target, this.getTrData(e), e])
 
-        });
+                    }
 
-        [...document.querySelectorAll(this.config.btnDelete)].forEach(btn => {
-
-            btn.addEventListener('click', e => {
-
-                let data = this.getTrData(e);
-
-                if (confirm(eval('`' + this.config.deleteMsg + '`'))) {
-
-                    fetch(eval('`' + this.config.deleteUrl + '`'), {
-                        method: 'DELETE'
-                    })
-                        .then(response => response.json())
-                        .then(json => {
-
-                            this.fireEvent('afterDeleteClick');
-
-                        });
-
-                }
+                });
 
             });
 

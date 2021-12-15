@@ -58,7 +58,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
 
             conn.query(`
-                SELECT * FROM tb_users ORDER BY id DESC
+                SELECT * FROM tb_users ORDER BY name
             `, (err, result) => {
 
                 if (err) {
@@ -75,14 +75,14 @@ module.exports = {
 
     },
 
-    save(fields, files) {
+    save(fields) {
 
         return new Promise((resolve, reject) => {
 
-            let query, queryPhoto = '', params = [
+            let query, params = [
                 fields.name,
                 fields.email,
-                
+
             ];
 
             if (parseInt(fields.id) > 0) {
@@ -92,7 +92,7 @@ module.exports = {
                 query = `
                     UPDATE tb_users
                     SET name = ?,
-                        email = ?,
+                        email = ?
                     WHERE id = ?
                 `;
 
@@ -139,10 +139,42 @@ module.exports = {
                 } else {
                     resolve(results);
                 }
-            
+
             });
 
         });
 
+    },
+    changePassword(req) {
+
+        return new Promise((s, r) => {
+
+            if (!req.fields.password) {
+                r('Preencha  a Senha.');
+            } else if (req.fields.password !== req.fields.passwordConfirm) {
+                r('As senhas não são iguais');
+            } else {
+
+                conn.query(`
+                    UPDATE tb_users SET password = ? WHERE id = ?`,
+                    [
+                        req.fields.password,
+                        req.fields.id
+                    ], (err, result) => {
+
+                        if (err) {
+                        
+                            r(err.message);
+                        
+                        } else {
+                        
+                            s(result)
+                        
+                        }
+                    
+                    });
+
+            }
+        })
     }
 }
