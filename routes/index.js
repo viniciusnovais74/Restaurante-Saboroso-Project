@@ -3,6 +3,7 @@ var menus = require('./../inc/menus');
 var reserva = require('./../inc/reservation');
 var contato = require('../inc/contacts');
 var express = require('express');
+const emails = require('../inc/emails');
 var router = express.Router();
 
 /* GET home page. */
@@ -122,6 +123,20 @@ router.post('/reservations', function (req, res, next) {
     })
 
   }
+
+})
+router.post("/subscribe", function (req, res, next) {
+  
+  emails.save(req).then(result => {
+  
+    res.send(result);
+  
+  }).catch(err => {
+  
+    res.send(err);
+  
+  });
+
 
 })
 
