@@ -230,17 +230,51 @@ new HcodeGrid({
   }
 });
 
-let graico = new Chart(document.querySelector("#chart").getContext('2d'), {
+let grafico = new Chart(document.querySelector("#chart").getContext('2d'), {
 
   type: 'line',
   data: {
-    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-    datasets: [{
-      data:[3,5,6,2,5,2],
-      label: 'reservas',
-      backgroundColor: 'rgb(54,162,235'
-    }]
+    labels: [],
+  },
+  options: {
+    tooltips:{
+      mode:'index',
+      intersect:false,
+    },
+    scales:{
+      xAxes:[{
+        display: true,
+        scaleLabel: {
+          display: true,
+          labelString: 'Mês'
+        }
+      }],
+      yAxes:[{
+        display:true,
+        scaleLabel:{
+          display:true,
+          labelString:'Reservas'
+        }
+      }]
+    }
   }
+});
 
+fetch(`/admin/reservations/chart${window.location.search}`)
+.then(response=> response.json())
+.then(json=>{
+
+  grafico.data = {
+    labels: json.months,
+    datasets: [{
+      data: json.values,
+      label: 'reservas',
+      backgroundColor: 'rgb(54,162,235)',
+      fill: true,
+      pointBackgroundColor: '#FFF'
+    }]
+  };
+
+  grafico.update();
 })
   </script>
