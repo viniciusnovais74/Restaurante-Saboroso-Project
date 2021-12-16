@@ -6,7 +6,9 @@ var express = require('express');
 const emails = require('../inc/emails');
 var router = express.Router();
 
-/* GET home page. */
+
+module.exports = function(io){
+  /* GET home page. */
 
 
 /* Pagina para Usuarios Comuns*/
@@ -61,6 +63,7 @@ router.post('/contacts', function (req, res, next) {
   } else {
     contato.save(req.body).then(results => {
       req.body = {};
+      io.emit('Dashboard Update');
       contato.render(req, res, null, "Contato enviado com sucesso!")
       console.log(req.body);
     }).catch(err => {
@@ -113,7 +116,7 @@ router.post('/reservations', function (req, res, next) {
     reserva.save(req.body).then(results => {
 
       req.body = {};
-
+      io.emit('Dashboard Update');
       reserva.render(req, res, null, "Reserva realizada com sucesso")
 
     }).catch(err => {
@@ -128,7 +131,7 @@ router.post('/reservations', function (req, res, next) {
 router.post("/subscribe", function (req, res, next) {
   
   emails.save(req).then(result => {
-  
+    io.emit('Dashboard Update');
     res.send(result);
   
   }).catch(err => {
@@ -140,4 +143,5 @@ router.post("/subscribe", function (req, res, next) {
 
 })
 
-module.exports = router;
+  return router;
+};
